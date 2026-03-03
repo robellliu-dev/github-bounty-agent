@@ -358,6 +358,28 @@ Closes #{task_details.get('number', '')}
             )
             
             print("   推送代码...")
+            
+            # 配置 git remote 使用 token
+            result = subprocess.run(
+                ["git", "remote", "get-url", "origin"],
+                cwd=repo_path,
+                capture_output=True,
+                text=True
+            )
+            
+            origin_url = result.stdout.strip()
+            if "github.com" in origin_url and "@" not in origin_url:
+                # 更新 remote URL 以使用 token
+                parts = origin_url.split("github.com/")
+                if len(parts) == 2:
+                    token_url = f"https://{self.token}@github.com/{parts[1]}"
+                    subprocess.run(
+                        ["git", "remote", "set-url", "origin", token_url],
+                        cwd=repo_path,
+                        check=True,
+                        capture_output=True
+                    )
+            
             subprocess.run(
                 ["git", "push", "-u", "origin", "HEAD"],
                 cwd=repo_path,
