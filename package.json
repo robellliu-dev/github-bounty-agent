@@ -1,0 +1,23 @@
+{
+  "name": "github-bounty-agent",
+  "version": "1.0.0",
+  "description": "GitHub Bounty Agent - 自动化赏金任务处理",
+  "main": "github_bounty_agent.py",
+  "scripts": {
+    "start": "python3 github_bounty_agent.py",
+    "auto": "python3 github_bounty_agent.py --auto",
+    "test": "python3 test_agent.py"
+  },
+  "keywords": [
+    "github",
+    "bounty",
+    "agent",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "requests": "^2.31.0"
+  },
+  "devDependencies": {}
+}
