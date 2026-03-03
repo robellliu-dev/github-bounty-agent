@@ -1,0 +1,77 @@
+name: Auto Run Bounty Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      languages:
+        description: '编程语言筛选 (逗号分隔)'
+        required: false
+        default: 'python,javascript,typescript'
+      max_tasks:
+        description: '最大处理任务数'
+        required: false
+        default: '1'
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时运行一次
+
+jobs:
+  run-bounty-agent:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r bounty_requirements.txt
+      
+      - name: Run Bounty Agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: |
+          languages="${{ github.event.inputs.languages }}"
+          max_tasks="${{ github.event.inputs.max_tasks }}"
+          python3 auto_run_improved.py
+          
+          # 保存结果
+          if [ -d workspace ]; then
+            echo "=== Bounty Agent Results ==="
+            ls -la workspace/
+            
+            # 上传结果
+            mkdir -p results
+            cp workspace/*.json results/ 2>/dev/null || true
+          fi
+      
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bounty-results-${{ github.run_id }}
+          path: |
+            workspace/
+            results/
+          retention-days: 7
+      
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 🤖 GitHub Bounty Agent 运行结果" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "运行时间: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f workspace/run_result_*.json ]; then
+            echo "### ✅ 处理结果" >> $GITHUB_STEP_SUMMARY
+            cat workspace/run_result_*.json | python3 -m json.tool >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ 未找到结果文件" >> $GITHUB_STEP_SUMMARY
+          fi
