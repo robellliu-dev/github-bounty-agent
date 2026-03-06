@@ -3,16 +3,16 @@ name: Auto Run Bounty Agent
 on:
   workflow_dispatch:
     inputs:
-      languages:
-        description: '编程语言筛选 (逗号分隔)'
+      target_pr_count:
+        description: 'Target PR count per run'
         required: false
-        default: 'python,javascript,typescript'
-      max_tasks:
-        description: '最大处理任务数'
+        default: '10'
+      max_parallel:
+        description: 'Max parallel tasks'
         required: false
-        default: '1'
+        default: '3'
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时运行一次
+    - cron: '0 */4 * * *'
 
 jobs:
   run-bounty-agent:
@@ -27,28 +27,77 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Install dependencies
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r bounty_requirements.txt
+          pip install requests pyyaml
+      
+      - name: Install OpenCode CLI
+        run: |
+          if ! command -v opencode &> /dev/null; then
+            echo "OpenCode CLI not found, using fallback mode"
+          fi
+          echo "OPENCODE_INSTALLED=$(command -v opencode &> /dev/null && echo 'true' || echo 'false')" >> $GITHUB_ENV
       
       - name: Run Bounty Agent
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
+          TARGET_PR_COUNT: ${{ github.event.inputs.target_pr_count || '10' }}
+          MAX_PARALLEL: ${{ github.event.inputs.max_parallel || '3' }}
         run: |
-          languages="${{ github.event.inputs.languages }}"
-          max_tasks="${{ github.event.inputs.max_tasks }}"
-          python3 auto_run_improved.py
+          echo "=============================================="
+          echo "GitHub Bounty Agent - Starting..."
+          echo "=============================================="
+          echo "Target PR Count: $TARGET_PR_COUNT"
+          echo "Max Parallel: $MAX_PARALLEL"
+          echo "User: $GITHUB_USERNAME"
+          echo "=============================================="
           
-          # 保存结果
-          if [ -d workspace ]; then
-            echo "=== Bounty Agent Results ==="
-            ls -la workspace/
+          python3 opencode_bounty_agent.py \
+            --target-pr-count $TARGET_PR_COUNT \
+            --max-parallel $MAX_PARALLEL \
+            --work-dir ./workspace || true
+          
+          echo "=============================================="
+          echo "Bounty Agent completed"
+          echo "=============================================="
+      
+      - name: Collect results
+        if: always()
+        run: |
+          echo "## GitHub Bounty Agent Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "workspace/results" ]; then
+            echo "### Results Found" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
             
-            # 上传结果
-            mkdir -p results
-            cp workspace/*.json results/ 2>/dev/null || true
+            for result_file in workspace/results/final_*.json; do
+              if [ -f "$result_file" ]; then
+                echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+                cat "$result_file" >> $GITHUB_STEP_SUMMARY
+                echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+          else
+            echo "### No Results Files Found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -d "workspace" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Workspace Contents" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            ls -la workspace/ 2>/dev/null || echo "Empty" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           fi
       
       - name: Upload results
@@ -58,20 +107,42 @@ jobs:
           name: bounty-results-${{ github.run_id }}
           path: |
             workspace/
-            results/
           retention-days: 7
       
-      - name: Create summary
-        if: always()
-        run: |
-          echo "## 🤖 GitHub Bounty Agent 运行结果" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "运行时间: $(date)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -f workspace/run_result_*.json ]; then
-            echo "### ✅ 处理结果" >> $GITHUB_STEP_SUMMARY
-            cat workspace/run_result_*.json | python3 -m json.tool >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### ⚠️ 未找到结果文件" >> $GITHUB_STEP_SUMMARY
-          fi
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Bounty Agent Run Failed - ${new Date().toISOString().split('T')[0]}`;
+            const body = `
+            ## Run Details
+            
+            - **Run ID:** ${{ github.run_id }}
+            - **Run Number:** ${{ github.run_number }}
+            - **Triggered by:** ${{ github.event_name }}
+            - **Branch:** ${{ github.ref }}
+            
+            ## Error
+            
+            The bounty agent workflow failed. Please check the logs for details.
+            
+            [View Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'bounty-agent-failure'
+            });
+            
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['bounty-agent-failure', 'automated']
+              });
+            }
