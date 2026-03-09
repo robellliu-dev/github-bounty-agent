@@ -1,0 +1,356 @@
+# ============================================================================
+# Open Source Bounty Projects Configuration
+# ============================================================================
+# This file contains a curated list of bounty programs and projects.
+# Each entry includes selection criteria, bounty amounts, and requirements.
+# ============================================================================
+
+# ============================================================================
+# MAJOR BOUNTY PLATFORMS (主流赏金平台)
+# ============================================================================
+
+platforms:
+  gitcoin:
+    name: "Gitcoin"
+    url: "https://gitcoin.co/explorer"
+    description: "Largest Web3/Open Source bounty platform (Ethereum ecosystem)"
+    avg_bounty_min: 50  # USD
+    avg_bounty_max: 5000  # USD
+    total_paid_out: "$50M+"  # Total paid to contributors
+    selection_criteria: |
+      - Largest OSS bounty platform in Web3
+      - Clear bounty amounts listed upfront
+      - Active community with many active bounties
+      - Supports multiple blockchains (Ethereum, Polygon, etc.)
+    languages: ["Solidity", "JavaScript", "Python", "Rust", "Go"]
+    difficulty_levels: ["beginner", "intermediate", "advanced"]
+    payment_method: "Cryptocurrency (ETH, DAI, USDC)"
+    
+  github_sponsors:
+    name: "GitHub Sponsors"
+    url: "https://github.com/sponsors"
+    description: "GitHub's official sponsorship platform for open source"
+    avg_bounty_min: 10
+    avg_bounty_max: 500
+    selection_criteria: |
+      - Integrated directly with GitHub
+      - No platform fees
+      - Supports recurring sponsorships
+      - Wide variety of projects
+    languages: ["All"]
+    difficulty_levels: ["beginner", "intermediate", "advanced"]
+    payment_method: "Bank transfer, PayPal"
+    
+  open_collective:
+    name: "Open Collective"
+    url: "https://opencollective.com"
+    description: "Open source project funding and fiscal sponsorship"
+    avg_bounty_min: 25
+    avg_bounty_max: 1000
+    selection_criteria: |
+      - Transparent financial tracking
+      - Many established OSS projects
+      - Supports expense submissions
+      - Active community
+    languages: ["JavaScript", "Python", "TypeScript", "Go", "Rust"]
+    difficulty_levels: ["beginner", "intermediate", "advanced"]
+    payment_method: "Bank transfer"
+
+  issuehunt:
+    name: "IssueHunt"
+    url: "https://issuehunt.io"
+    description: "Japan's #1 Bug Bounty Platform (also supports OSS)"
+    avg_bounty_min: 50
+    avg_bounty_max: 5000
+    selection_criteria: |
+      - Clear bounty amounts on issues
+      - Active Japanese companies
+      - Good for security researchers
+      - Growing international presence
+    languages: ["JavaScript", "Python", "Ruby", "Go"]
+    difficulty_levels: ["beginner", "intermediate", "advanced"]
+    payment_method: "Bank transfer, PayPal"
+
+# ============================================================================
+# BLOCKCHAIN BOUNTY PROGRAMS (区块链赏金计划)
+# ============================================================================
+
+blockchain_bounties:
+  algorand:
+    name: "Algorand Foundation Bounty Program"
+    url: "https://docs.algorand.foundation/bugs-and-bounties"
+    repo: "https://github.com/algorand"
+    description: "Algorand blockchain ecosystem bounties"
+    total_bounty_pool: "$150,000+"  # Total available
+    avg_bounty_min: 100
+    avg_bounty_max: 50000
+    critical_bug_bounty: "Up to $1,000,000"  # For critical security bugs
+    selection_criteria: |
+      - Well-funded foundation
+      - Clear bounty tiers
+      - Active development
+      - Growing ecosystem
+    categories:
+      - name: "Smart Contracts"
+        bounty_range: "$500 - $10,000"
+        examples: ["PyTeal improvements", "TEAL optimizations"]
+      - name: "Developer Tools"
+        bounty_range: "$200 - $5,000"
+        examples: ["SDK improvements", "CLI tools"]
+      - name: "Documentation"
+        bounty_range: "$50 - $500"
+        examples: ["Tutorial creation", "API documentation"]
+    languages: ["Python", "Go", "JavaScript", "TypeScript"]
+    
+  solana:
+    name: "Solana Foundation Bounty Program"
+    url: "https://solana.org/bounty-program"
+    repo: "https://github.com/solana-labs"
+    description: "Solana blockchain ecosystem bounties"
+    total_bounty_pool: "$200,000+"
+    avg_bounty_min: 100
+    avg_bounty_max: 50000
+    critical_bug_bounty: "Up to $2,000,000"
+    selection_criteria: |
+      - One of the largest L1 blockchains
+      - High-value bounties
+      - Active ecosystem
+      - Strong documentation
+    categories:
+      - name: "Core Protocol"
+        bounty_range: "$1,000 - $50,000"
+      - name: "dApps"
+        bounty_range: "$100 - $5,000"
+      - name: "Tooling"
+        bounty_range: "$200 - $10,000"
+    languages: ["Rust", "C", "C++", "TypeScript"]
+    
+  ethereum:
+    name: "Ethereum Ecosystem Bounties"
+    url: "https://ethereum.org/en/developers/docs/standards/"
+    repo: "https://github.com/ethereum"
+    description: "Ethereum protocol and ecosystem bounties"
+    total_bounty_pool: "$1,000,000+"
+    avg_bounty_min: 500
+    avg_bounty_max: 250000
+    critical_bug_bounty: "Up to $250,000 (critical protocol bugs)"
+    selection_criteria: |
+      - Largest smart contract platform
+      - Highest bounty amounts
+      - Most active ecosystem
+      - Strong community support
+    categories:
+      - name: "Protocol Development"
+        bounty_range: "$5,000 - $250,000"
+      - name: "EIPs Implementation"
+        bounty_range: "$1,000 - $50,000"
+      - name: "Developer Tools"
+        bounty_range: "$500 - $20,000"
+    languages: ["Go", "Rust", "Solidity", "Python"]
+
+# ============================================================================
+# MAJOR OPEN SOURCE PROJECTS WITH BOUNTIES (大型开源项目赏金)
+# ============================================================================
+
+oss_bounties:
+  linux_kernel:
+    name: "Linux Kernel"
+    url: "https://www.linuxfoundation.org/"
+    repo: "https://github.com/torvalds/linux"
+    description: "Linux kernel bug bounty program"
+    avg_bounty_min: 200
+    avg_bounty_max: 10000
+    critical_bug_bounty: "Up to $100,000"
+    stars: 190000
+    selection_criteria: |
+      - Most important OSS project
+      - High bounty for security bugs
+      - Strong community
+      - Clear contribution guidelines
+    languages: ["C", "Assembly"]
+    difficulty: "advanced"
+    
+  mozilla:
+    name: "Mozilla Projects"
+    url: "https://www.mozilla.org/en-US/security/bug-bounty/"
+    repo: "https://github.com/mozilla"
+    description: "Firefox, Thunderbird, and related projects"
+    total_bounty_pool: "$1,000,000+"
+    avg_bounty_min: 100
+    avg_bounty_max: 15000
+    critical_bug_bounty: "Up to $15,000"
+    stars: 50000+
+    selection_criteria: |
+      - Major browser vendor
+      - Well-documented bounty program
+      - Clear reporting process
+      - Fast response times
+    projects:
+      - "Firefox"
+      - "Thunderbird"
+      - "Firefox DevTools"
+      - "Mozilla Services"
+    languages: ["Rust", "C++", "JavaScript", "Python"]
+    
+  kubernetes:
+    name: "Kubernetes"
+    url: "https://kubernetes.io/"
+    repo: "https://github.com/kubernetes/kubernetes"
+    description: "Container orchestration platform"
+    avg_bounty_min: 100
+    avg_bounty_max: 5000
+    stars: 110000
+    selection_criteria: |
+      - Most popular container orchestration
+      - Large enterprise adoption
+      - Active community
+      - Clear contribution process
+    languages: ["Go", "Python", "Bash"]
+    
+  tensorflow:
+    name: "TensorFlow"
+    url: "https://www.tensorflow.org/"
+    repo: "https://github.com/tensorflow/tensorflow"
+    description: "Machine learning framework"
+    avg_bounty_min: 100
+    avg_bounty_max: 10000
+    stars: 185000
+    selection_criteria: |
+      - Most popular ML framework
+      - Large community
+      - Many use cases
+      - Clear contribution guidelines
+    languages: ["Python", "C++", "CUDA"]
+
+# ============================================================================
+# POPULAR REPOSITORIES WITH BOUNTIES (热门赏金仓库)
+# ============================================================================
+
+active_repositories:
+  - name: "PayloadsAllTheThings"
+    repo: "swisskyrepo/PayloadsAllTheThings"
+    url: "https://github.com/swisskyrepo/PayloadsAllTheThings"
+    stars: 75900
+    forks: 14300
+    language: "Python"
+    bounty_amount: "Not fixed - community contributions"
+    issue_count: 50
+    selection_criteria: |
+      - Large community
+      - Active development
+      - Clear contribution guidelines
+      - Educational value
+    difficulty: "beginner to intermediate"
+    
+  - name: "Algora"
+    repo: "algora-io/algora"
+    url: "https://github.com/algora-io/algora"
+    stars: 1200
+    forks: 50
+    language: "Elixir"
+    bounty_amount: "$50 - $500 per issue"
+    issue_count: 30
+    selection_criteria: |
+      - Bounty marketplace platform
+      - Clear bounty amounts
+      - Active maintainers
+      - Good first issues available
+    difficulty: "intermediate"
+    
+  - name: "Kana Dojo"
+    repo: "lingdojo/kana-dojo"
+    url: "https://github.com/lingdojo/kana-dojo"
+    stars: 1796
+    forks: 1019
+    language: "TypeScript"
+    bounty_amount: "Community contributions"
+    issue_count: 100+
+    selection_criteria: |
+      - Active project
+      - Many good first issues
+      - Clear contribution process
+      - Beginner-friendly
+    difficulty: "beginner"
+
+# ============================================================================
+# SELECTION CRITERIA (项目选择标准)
+# ============================================================================
+
+selection_criteria:
+  primary_factors:
+    - name: "Stars Count"
+      weight: 0.3
+      description: "Project popularity and visibility"
+      min_threshold: 100
+      max_threshold: 100000
+      
+    - name: "Active Issues"
+      weight: 0.25
+      description: "Number of open issues with bounty labels"
+      min_threshold: 10
+      
+    - name: "Community Activity"
+      weight: 0.2
+      description: "Recent commits, PRs, and discussions"
+      min_threshold: "10 commits/month"
+      
+    - name: "Bounty Amount"
+      weight: 0.15
+      description: "Clear bounty amounts listed"
+      min_threshold: 50  # USD
+      
+    - name: "Contribution Difficulty"
+      weight: 0.1
+      description: "Technical complexity and documentation"
+      preferred: ["beginner", "intermediate"]
+
+  exclusion_criteria:
+    - "No CONTRIBUTING.md or contribution guidelines"
+    - "Inactive for more than 6 months"
+    - "License restrictions (non-OSI approved)"
+    - "Closed source or proprietary components"
+    - "Too many open PRs without reviews"
+
+# ============================================================================
+# DEFAULT CONFIGURATION (默认配置)
+# ============================================================================
+
+defaults:
+  max_projects_per_run: 10
+  target_pr_count_per_day: 10
+  
+  filters:
+    min_stars: 100
+    max_stars: 100000
+    min_forks: 10
+    max_size_kb: 50000  # Prefer smaller repos for faster processing
+    max_issues: 1000
+    max_comments: 10  # Max comments per issue
+    preferred_labels:
+      - "good first issue"
+      - "help wanted"
+      - "bounty"
+      - "enhancement"
+      - "bug"
+    
+  priority_languages:
+    - "Python"
+    - "JavaScript"
+    - "TypeScript"
+    - "Go"
+    - "Rust"
+    
+  time_limits:
+    fork_wait_seconds: 10
+    clone_timeout_seconds: 120
+    analysis_timeout_seconds: 300
+    test_timeout_seconds: 180
+    
+  retry_config:
+    max_retries: 3
+    retry_delay_seconds: 5
+    
+  output:
+    results_dir: "./workspace/results"
+    logs_dir: "./workspace/logs"
+    save_intermediate: true

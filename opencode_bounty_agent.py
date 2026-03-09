@@ -588,7 +588,7 @@ class EnhancedBountyAgent:
             if clone_path.exists():
                 shutil.rmtree(clone_path)
             
-            clone_url = f"https://{self.token}@github.com/{self.username}/{repo}.git"
+            clone_url = f"git@github.com:{self.username}/{repo}.git"
             subprocess.run(
                 ["git", "clone", clone_url, str(clone_path)],
                 check=True,
