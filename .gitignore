@@ -16,3 +16,30 @@ build/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Workspace directories
+workspace_continuous/
+workspace_intelligent/
+workspace_simple/
+workspace/
+
+# Log files
+*.log
+continuous.log
+bounty_runner.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
