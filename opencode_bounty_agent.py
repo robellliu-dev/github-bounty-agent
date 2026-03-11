@@ -24,6 +24,34 @@ import requests
 import re
 import traceback
 
+# 加载配置文件
+def load_config():
+    config_paths = [
+        Path.home() / ".config" / "opencode" / "config.yaml",
+        Path.home() / ".config" / "opencode" / "config.json",
+        Path(__file__).parent / "config.yaml",
+    ]
+    
+    for config_path in config_paths:
+        if config_path.exists():
+            try:
+                import yaml
+                with open(config_path) as f:
+                    config = yaml.safe_load(f)
+                    if config:
+                        env = config.get("environment", {})
+                        if "GITHUB_TOKEN" in env and not os.getenv("GITHUB_TOKEN"):
+                            os.environ["GITHUB_TOKEN"] = env["GITHUB_TOKEN"]
+                        if "GITHUB_USERNAME" in env and not os.getenv("GITHUB_USERNAME"):
+                            os.environ["GITHUB_USERNAME"] = env["GITHUB_USERNAME"]
+                        return config
+            except:
+                pass
+    return {}
+
+# 启动时加载配置
+load_config()
+
 
 logging.basicConfig(
     level=logging.INFO,
